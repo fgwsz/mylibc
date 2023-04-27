@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.15)
+project(mylibc VERSION 0.0.1 LANGUAGES C)
+set(CMAKE_C_STANDARD 11)
+aux_source_directory(src SRC_DIR)
+include_directories(include)
+add_executable(${PROJECT_NAME} ${SRC_DIR})
