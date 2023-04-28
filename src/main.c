@@ -1,13 +1,24 @@
 #include<stdio.h> // printf
-#include"memory_heap.h"
+#include"memory.h"
 #include"memory_stack.h"
+#define MAX_COUNT 40
 int main(void){
-    int* ptr=(int*)memoryStackAlloc(sizeof(int));
-    printf("%d\n",(size_t)ptr);
-    *ptr=100;
-    printf("%d\n",*ptr);
-    memoryStackFree(ptr);
-    printf("%d\n",*ptr);
-    ptr=NULL;
+    int byte_size=1;
+    int* ptr_arr[MAX_COUNT];
+    int index=0;
+    while(byte_size<MAX_COUNT){
+        ptr_arr[index]=(int*)memoryAlloc(byte_size*sizeof(int)*1024);
+        if(inMemoryStack(ptr_arr[index])){
+            printf("stack memory:%x\n",ptr_arr[index]);
+        }else{
+            printf("heap memory:%x\n",ptr_arr[index]);
+        }
+        ++byte_size;
+        ++index;
+    }
+    for(index=0;index<MAX_COUNT;++index){
+        memoryFree(ptr_arr[index]);
+        ptr_arr[index]=NULL;
+    }
     return 0;
 }

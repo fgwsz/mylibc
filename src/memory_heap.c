@@ -2,6 +2,9 @@
 #include<stdlib.h> // malloc free
 #include<string.h> // memset
 void* memoryHeapAlloc(size_t byte_size){
+    if(byte_size==0){
+        return NULL;
+    }
     void* ret=NULL;
     while(1){
         ret=malloc(byte_size);
