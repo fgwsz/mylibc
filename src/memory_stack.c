@@ -50,7 +50,7 @@ void  memoryStackFree(void* pointer){
         stack_memory_block_head_t* block_head=(stack_memory_block_head_t*)(
             (unsigned char*)pointer-sizeof(stack_memory_block_head_t)
         );
-        memset(block_head,0,sizeof(stack_memory_block_head_t)+block_head->size_);
         stack_current_size+=sizeof(stack_memory_block_head_t)+block_head->size_;
+        memset(block_head,0,sizeof(stack_memory_block_head_t)+block_head->size_);
     }
 }
