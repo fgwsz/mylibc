@@ -1,10 +1,13 @@
 #include"memory_stack.h"
 #include<string.h> // memset
 typedef unsigned char __byte_t;
+#pragma pack(push)
+#pragma pack(1)
 typedef struct{
     __byte_t flag_;
     size_t size_;
 }__block_head_t;
+#pragma pack(pop)
 enum{
     __stack_capacity=(size_t)(1024*1024),
     __block_head_size=sizeof(__block_head_t)

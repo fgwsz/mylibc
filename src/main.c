@@ -1,8 +1,8 @@
 #include<stdio.h> // printf
 #include"memory.h"
 #include"memory_stack.h"
-#define MAX_COUNT 40
 int main(void){
+    #define MAX_COUNT 40
     int byte_size=1;
     int* ptr_arr[MAX_COUNT];
     int index=0;
