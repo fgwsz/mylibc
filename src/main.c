@@ -7,6 +7,7 @@ int main(void){
     *ptr=100;
     printf("%d\n",*ptr);
     memoryStackFree(ptr);
+    printf("%d\n",*ptr);
     ptr=NULL;
     return 0;
 }

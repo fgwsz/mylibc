@@ -10,7 +10,7 @@ typedef struct StackMemoryBlockHead{
     size_t size_;
 }stack_memory_block_head_t;
 void* memoryStackAlloc(size_t byte_size){
-    if(byte_size==0){
+    if(byte_size==0||byte_size+sizeof(stack_memory_block_head_t)>stack_current_size){
         return NULL;
     }
     size_t current_index=0;
@@ -32,6 +32,7 @@ void* memoryStackAlloc(size_t byte_size){
                 );
                 block_head->flag_=1;
                 block_head->size_=byte_size;
+                stack_current_size-=byte_size+sizeof(stack_memory_block_head_t);
                 return (unsigned char*)block_head+sizeof(stack_memory_block_head_t);
             }else if(current_index<stack_capacity){
                 continue;
@@ -50,5 +51,6 @@ void  memoryStackFree(void* pointer){
             (unsigned char*)pointer-sizeof(stack_memory_block_head_t)
         );
         memset(block_head,0,sizeof(stack_memory_block_head_t)+block_head->size_);
+        stack_current_size+=sizeof(stack_memory_block_head_t)+block_head->size_;
     }
 }
