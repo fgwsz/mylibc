@@ -8,10 +8,8 @@ typedef struct{
     size_t size_;
 }__block_head_t;
 #pragma pack(pop)
-enum{
-    __stack_capacity=(size_t)(1024*1024),
-    __block_head_size=sizeof(__block_head_t)
-};
+enum { __stack_capacity=(size_t)(1024*1024) };
+static size_t const __block_head_size=sizeof(__block_head_t);
 static __byte_t __memory_stack[__stack_capacity]={0};
 static size_t __stack_size=__stack_capacity;
 static size_t __stack_index=0;
@@ -24,7 +22,7 @@ void* memoryStackAlloc(size_t byte_size){
     size_t block_begin_index=0;
     void* ret=NULL;
     __byte_t first_unused_block=1;
-    while(current_index<__stack_capacity){
+    while(current_index<__stack_capacity&&__block_head_size+byte_size<=__stack_capacity-current_index){
         // check byte size of the unused block
         if(__memory_stack[current_index]==0){
             block_begin_index=current_index;
@@ -59,14 +57,14 @@ void* memoryStackAlloc(size_t byte_size){
             }
         }
         // jump the block in use
-        current_index+=current_index+*(size_t*)((__byte_t*)__memory_stack+current_index+1);
+        current_index+=__block_head_size+*(size_t*)((__byte_t*)__memory_stack+current_index+1);
     }
     return ret;
 }
 static __byte_t __inMemoryStack(void* pointer) {
     return pointer!=NULL&&
         (__byte_t*)pointer>=(__byte_t*)__memory_stack+__block_head_size&&
-        (__byte_t*)pointer<(__byte_t*)__memory_stack+__stack_capacity-__block_head_size;
+        (__byte_t*)pointer<(__byte_t*)__memory_stack+__stack_capacity;
 }
 void  memoryStackFree(void* pointer){
     if(__inMemoryStack(pointer)){
