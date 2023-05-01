@@ -26,7 +26,7 @@ typedef struct{
     (__byte_t*)__memory_stack+__memory_stack_size \
 ))
 static __block_head_t* __block_head_first_unused=__block_head_begin;
-static size_t __memory_stack_remaining_size=__memory_stack_size-__block_head_size-__block_tail_size;
+static size_t __memory_stack_remaining_size=__memory_stack_size;
 static bool __block_head_getIsUsed(__block_head_t* block_head);
 static void __block_head_setIsUsed(__block_head_t* block_head,bool is_used);
 static size_t __block_head_getBodySize(__block_head_t* block_head);
@@ -187,12 +187,16 @@ extern void* memory_stack_alloc(size_t byte_size){
     if(byte_size==0){
         return NULL;
     }
-    if(byte_size>__memory_stack_remaining_size){
+    if(__block_head_size+byte_size+__block_tail_size>__memory_stack_remaining_size){
         return NULL;
     }
     __block_head_t* block_head=__block_head_first_unused;
     bool is_first_unused=true;
-    while(block_head<__block_head_end){
+    while(
+        ((__byte_t*)block_head)+
+        __block_head_size+byte_size+__block_tail_size
+        <=((__byte_t*)__block_head_end)
+    ){
         if(__block_head_getIsUsed(block_head)==false){
             if(is_first_unused==true){
                 is_first_unused=false;
@@ -200,7 +204,10 @@ extern void* memory_stack_alloc(size_t byte_size){
             }
             if(__block_head_getBodySize(block_head)>=byte_size){
                 __block_head_split(block_head,byte_size);
-                __memory_stack_remaining_size-=__block_head_getBodySize(block_head);
+                __memory_stack_remaining_size-=
+                    __block_head_size+
+                    __block_head_getBodySize(block_head)+
+                    __block_tail_size;
                 return __block_head_getBody(block_head);
             }
         }
@@ -242,7 +249,10 @@ extern void memory_stack_free(void* pointer){
     if(__block_head_getIsUsed(block_head)==false){
         return;
     }
-    __memory_stack_remaining_size+=__block_head_getBodySize(block_head);
+    __memory_stack_remaining_size+=
+        __block_head_size+
+        __block_head_getBodySize(block_head)+
+        __block_tail_size;
     if(
         __block_head_hasPrev(block_head)&&
         __block_head_getIsUsed(__block_head_getPrevHead(block_head))==false
