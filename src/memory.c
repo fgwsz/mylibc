@@ -1,18 +1,18 @@
 #include"memory.h"
-#include"memory_heap.h"
 #include"memory_stack.h"
-void* memoryAlloc(size_t byte_size){
-    void* ret=memoryStackAlloc(byte_size);
+#include"memory_heap.h"
+extern void* memory_alloc(size_t byte_size){
+    void* ret=memory_stack_alloc(byte_size);
     if(ret==NULL){
-        ret=memoryHeapAlloc(byte_size);
+        ret=memory_heap_alloc(byte_size);
     }
     return ret;
 }
-void  memoryFree(void* pointer){
-    if(inMemoryStack(pointer)){
-        memoryStackFree(pointer);
+extern void memory_free(void* pointer){
+    if(memory_stack_has(pointer)){
+        memory_stack_free(pointer);
     }else{
-        memoryHeapFree(pointer);
+        memory_heap_free(pointer);
     }
     pointer=NULL;
 }

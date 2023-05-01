@@ -6,8 +6,8 @@
     extern "C"{
 #endif // __cplusplus
 /* decl public interface */
-extern void* memoryHeapAlloc(size_t byte_size);
-extern void  memoryHeapFree(void* pointer);
+extern void* memory_heap_alloc(size_t byte_size);
+extern void  memory_heap_free(void* pointer);
 #ifdef __cplusplus
     }
 #endif // __cplusplus

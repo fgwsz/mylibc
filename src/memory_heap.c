@@ -1,7 +1,7 @@
 #include"memory_heap.h"
 #include<stdlib.h> // malloc free
 #include<string.h> // memset
-void* memoryHeapAlloc(size_t byte_size){
+extern void* memory_heap_alloc(size_t byte_size){
     if(byte_size==0){
         return NULL;
     }
@@ -16,7 +16,7 @@ void* memoryHeapAlloc(size_t byte_size){
         ret=NULL;
     }
 }
-void  memoryHeapFree(void* pointer){
+extern void memory_heap_free(void* pointer){
     if(pointer!=NULL){
         free(pointer);
     }
