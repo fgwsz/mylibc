@@ -3,10 +3,10 @@
 #include"memory_heap.h"
 extern void* memory_alloc(size_t byte_size){
     void* ret=memory_stack_alloc(byte_size);
-    if(ret==NULL){
-        ret=memory_heap_alloc(byte_size);
+    if(ret!=NULL){
+        return ret;
     }
-    return ret;
+    return memory_heap_alloc(byte_size);
 }
 extern void memory_free(void* pointer){
     if(memory_stack_has(pointer)){
@@ -14,5 +14,4 @@ extern void memory_free(void* pointer){
     }else{
         memory_heap_free(pointer);
     }
-    pointer=NULL;
 }
